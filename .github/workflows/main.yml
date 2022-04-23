@@ -37,8 +37,8 @@ jobs:
         push: true
         tags: ghcr.io/mertdogan12/website:latest
         build-args: |
-          "ssh_prv_key=${{ secrets.PRV_KEY }}"
-          "ssh_pub_key=${{ secrets.PUB_KEY }}"
+          "github_username=mertdogan12"
+          "github_token=${{ secrets.GITHUB_TOKEN }}"
           
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
