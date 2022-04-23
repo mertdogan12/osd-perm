@@ -5,7 +5,7 @@ mongo <<EOF
 use $MONGO_DATABASE
 
 db.users.insertOne({
-  id: "$OSD_ID",
+  id: $OSD_ID,
   name: "$OSD_NAME",
   groups: ["admins"],
 })
