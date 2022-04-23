@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/mertdogan12/osd-perm/pkg/helper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -37,7 +38,7 @@ func GetUser(id int) *User {
 	perms := make([]string, 0)
 	for _, group := range user.Groups {
 		for _, perm := range GetGroup(group).Permissions {
-			if !contains(perms, perm) {
+			if !helper.StringArrayConatins(perms, perm) {
 				perms = append(perms, perm)
 			}
 		}
