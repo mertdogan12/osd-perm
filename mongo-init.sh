@@ -11,7 +11,7 @@ db.users.insertOne({
 })
 
 db.groups.insertOne({
-  name: "admin",
+  name: "admins",
   permissions: ["*"],
 })
 
