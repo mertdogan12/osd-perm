@@ -28,7 +28,7 @@ jobs:
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
-        password: ${{ secrets.ttt }}
+        password: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Build and push
       id: docker_build
@@ -38,7 +38,7 @@ jobs:
         tags: ghcr.io/mertdogan12/website:latest
         build-args: |
           "github_username=mertdogan12"
-          "github_token=${{ secrets.GITHUB_TOKEN }}"
+          "github_token=${{ secrets.ttt }}"
           
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
