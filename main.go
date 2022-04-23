@@ -22,5 +22,5 @@ func main() {
 	}
 
 	user := mongo.GetUser(id)
-	fmt.Println("Name:", user.Name)
+	fmt.Println(*user)
 }

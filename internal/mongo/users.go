@@ -2,6 +2,8 @@ package mongo
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,17 +17,33 @@ type User struct {
 }
 
 func GetUser(id int) *User {
+	if _database == nil {
+		panic(errors.New("You are not connected (use mongo.Connect() to Connect))"))
+	}
+
 	coll := _database.Collection("users")
 
 	var user User
 	err := coll.FindOne(context.TODO(), bson.D{{"id", id}}).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
+			fmt.Println("Couldn't find user with id:", id)
 			return nil
 		}
 
 		panic(err)
 	}
+
+	perms := make([]string, 0)
+	for _, group := range user.Groups {
+		for _, perm := range GetGroup(group).Permissions {
+			if !contains(perms, perm) {
+				perms = append(perms, perm)
+			}
+		}
+	}
+
+	user.Permissions = perms
 
 	return &user
 }
