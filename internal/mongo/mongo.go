@@ -16,7 +16,8 @@ var _ctx context.Context
 var _cancel context.CancelFunc
 
 func Connect() {
-	mongoUrl := fmt.Sprintf("mongodb://%s:%s@127.0.0.1:27017/", os.Getenv("MONGO_USERNAME"), os.Getenv("MONGO_PASSWORD"))
+	mongoUrl := fmt.Sprintf("mongodb://%s:%s@%s:27017/",
+		os.Getenv("MONGO_USERNAME"), os.Getenv("MONGO_PASSWORD"), os.Getenv("MONGO_HOST"))
 	client, err := mongo.NewClient(options.Client().ApplyURI(mongoUrl))
 	if err != nil {
 		panic(err)
