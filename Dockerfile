@@ -4,7 +4,6 @@ ARG github_username
 ARG github_token
 
 RUN echo "machine github.com login $github_username password $github_token" | cat > /root/.netrc
-RUN echo "machine github.com login $github_username password $github_token"
 
 WORKDIR /go/src/github.com/mertdogan12/osd-perm
 
