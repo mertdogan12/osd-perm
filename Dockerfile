@@ -1,25 +1,10 @@
 FROM golang:latest as build-deps
 
-ARG ssh_prv_key
-ARG ssh_pub_key
+ARG github_username
+ARG github_token
 
-RUN apt update; \
-    apt install -y \
-        git \
-        openssh-server
-
-# Authorize SSH Host
-RUN mkdir -p /root/.ssh; \
-    chmod 0700 /root/.ssh; \
-    ssh-keyscan -t rsa github.com >> /root/.ssh/known_hosts
-
-# Add the keys and set permissions
-RUN echo "$ssh_prv_key" > /root/.ssh/id_rsa; \
-    echo "$ssh_pub_key" > /root/.ssh/id_rsa.pub; \
-    chmod 600 /root/.ssh/id_rsa; \
-    chmod 600 /root/.ssh/id_rsa.pub
-
-RUN git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+RUN echo "machine github.com login $github_username password $github_token" | cat > /root/.netrc
+RUN echo "machine github.com login $github_username password $github_token"
 
 WORKDIR /go/src/github.com/mertdogan12/osd-perm
 
@@ -36,6 +21,8 @@ FROM ubuntu:latest
 
 WORKDIR /app
 
-COPY --from=build-deps /go/src/github.com/mertdogan12/osd-perm ./
+COPY --from=build-deps /go/src/github.com/mertdogan12/osd-perm/osd-perm ./
 
 EXPOSE 80
+
+CMD ["/app/osd-perm"]
