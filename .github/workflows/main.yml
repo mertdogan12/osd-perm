@@ -35,7 +35,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: ghcr.io/mertdogan12/website:latest
+        tags: ghcr.io/mertdogan12/osd-perm:latest
         build-args: |
           "github_username=mertdogan12"
           "github_token=${{ secrets.ttt }}"
