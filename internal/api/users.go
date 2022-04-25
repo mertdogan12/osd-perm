@@ -40,7 +40,11 @@ func GetMe(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	mongoUser := mongo.GetUser(user_.Id)
+	mongoUser, err := mongo.GetUser(user_.Id)
+	if err != nil {
+		respondErr(err, w)
+		return
+	}
 	if mongoUser == nil {
 		respond(http.StatusNoContent, fmt.Sprintf("User does not exists. Id: %d", user_.Id), w)
 		return

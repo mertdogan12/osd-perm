@@ -37,7 +37,13 @@ func GetUser(id int) (*User, error) {
 
 	perms := make([]string, 0)
 	for _, group := range user.Groups {
-		for _, perm := range GetGroup(group).Permissions {
+		g, err := GetGroup(group)
+
+		if err != nil {
+			return nil, err
+		}
+
+		for _, perm := range g.Permissions {
 			if !helper.StringArrayConatins(perms, perm) {
 				perms = append(perms, perm)
 			}
