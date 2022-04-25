@@ -14,7 +14,7 @@ type Group struct {
 	Permissions []string `bson:"permissions"`
 }
 
-func GetGroup(name string) *Group {
+func GetGroup(name string) (*Group, error) {
 	if _database == nil {
 		panic(errors.New("You are not connected (use mongo.Connect() to Connect))"))
 	}
@@ -26,11 +26,11 @@ func GetGroup(name string) *Group {
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			fmt.Println("Couldn't find group:", name)
-			return nil
+			return nil, nil
 		}
 
-		panic(err)
+		return nil, err
 	}
 
-	return &group
+	return &group, nil
 }

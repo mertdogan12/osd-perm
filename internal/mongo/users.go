@@ -17,7 +17,7 @@ type User struct {
 	Permissions []string
 }
 
-func GetUser(id int) *User {
+func GetUser(id int) (*User, error) {
 	if _database == nil {
 		panic(errors.New("You are not connected (use mongo.Connect() to Connect))"))
 	}
@@ -29,10 +29,10 @@ func GetUser(id int) *User {
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			fmt.Println("Couldn't find user with id:", id)
-			return nil
+			return nil, nil
 		}
 
-		panic(err)
+		return nil, err
 	}
 
 	perms := make([]string, 0)
@@ -46,5 +46,5 @@ func GetUser(id int) *User {
 
 	user.Permissions = perms
 
-	return &user
+	return &user, nil
 }
