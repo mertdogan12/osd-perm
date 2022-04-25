@@ -3,6 +3,9 @@ FROM golang:latest as build-deps
 ARG github_username
 ARG github_token
 
+RUN apt -y update
+RUN apt -y install openssl
+
 RUN echo "machine github.com login $github_username password $github_token" | cat > /root/.netrc
 
 WORKDIR /go/src/github.com/mertdogan12/osd-perm
