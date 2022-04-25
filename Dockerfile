@@ -3,8 +3,7 @@ FROM golang:latest as build-deps
 ARG github_username
 ARG github_token
 
-RUN apt -y update
-RUN apt -y install openssl
+RUN apt-get update && apt-get install -y ca-certificates --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 RUN echo "machine github.com login $github_username password $github_token" | cat > /root/.netrc
 
