@@ -11,8 +11,6 @@ import (
 	"github.com/mertdogan12/osd-perm/internal/mongo"
 )
 
-const prefix string = "/api/v1/"
-
 func main() {
 	// .env
 	godotenv.Load()
@@ -22,7 +20,7 @@ func main() {
 	mongo.Connect()
 	defer mongo.Disconnect()
 
-	http.HandleFunc(prefix+"users/me", api.GetMe)
+	http.HandleFunc("/users/me", api.GetMe)
 
 	fmt.Println("Server started on port:", conf.Port)
 	http.ListenAndServe(":"+fmt.Sprint(conf.Port), nil)
