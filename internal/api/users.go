@@ -4,34 +4,53 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/mertdogan12/osd-perm/internal/mongo"
 	"github.com/mertdogan12/osd/pkg/user"
 )
 
+func respond(status int, message string, w http.ResponseWriter) {
+	w.WriteHeader(status)
+	w.Write([]byte(message))
+	fmt.Println("users/me:", status, "|", message)
+}
+
+func respondErr(err error, w http.ResponseWriter) {
+	respond(http.StatusInternalServerError, "Error", w)
+	fmt.Fprintln(os.Stderr, err.Error())
+}
+
 func GetMe(w http.ResponseWriter, r *http.Request) {
 	token := strings.Split(r.Header.Get("Authorization"), " ")
 	if token[0] != "Bearer" {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Authorization token must be Bearer"))
-		fmt.Println("users/me | No token")
+		respond(http.StatusUnauthorized, "Authorization token must be Bearer", w)
 		return
 	}
 
-	user := user.GetUserData(token[1])
-	mongoUser := mongo.GetUser(user.Id)
+	user_, err := user.GetUserData(token[1])
+	if err != nil {
+		if err == user.AuthError {
+			respond(http.StatusUnauthorized, "Token in invalid", w)
+			return
+		}
+
+		respondErr(err, w)
+		return
+	}
+
+	mongoUser := mongo.GetUser(user_.Id)
 	if mongoUser == nil {
-		w.WriteHeader(http.StatusNoContent)
-		w.Write([]byte(fmt.Sprintf("User does not exists. Id: %d", user.Id)))
-		fmt.Println("users/me | User doesn't exists:", user.Id)
+		respond(http.StatusNoContent, fmt.Sprintf("User does not exists. Id: %d", user_.Id), w)
 		return
 	}
 
-	fmt.Println("users/me | Success, id:", user.Id)
+	fmt.Println("users/me | Success, id:", user_.Id)
 	out, err := json.Marshal(mongoUser)
 	if err != nil {
-		panic(err)
+		respondErr(err, w)
+		return
 	}
 
 	w.Write(out)
