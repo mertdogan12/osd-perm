@@ -11,9 +11,9 @@ import (
 )
 
 type User struct {
-	Id          int      `bson:"id"`
-	Name        string   `bson:"name"`
-	Groups      []string `bson:"groups"`
+	Id          int      `bson:"id" json:"id"`
+	Name        string   `bson:"name" json:"name"`
+	Groups      []string `bson:"groups" json:"groups"`
 	Permissions []string
 }
 
