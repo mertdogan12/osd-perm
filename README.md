@@ -20,4 +20,11 @@ docker build -t ghcr.io/mertdogan12/osd-perm:latest --build-arg github_username=
 go install github.com/mertdogan12/osd-perm:latest
 ```
 
+## Use it
+
+```bash
+# Default port 80
+osu-perm -p <port>
+```
+
 ## [API Dokumentation](https://documenter.getpostman.com/view/14220165/UyrBhvb9)
