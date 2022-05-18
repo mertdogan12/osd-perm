@@ -3,7 +3,6 @@ package helper
 import (
 	"fmt"
 	"net/http"
-	"os"
 )
 
 func ApiRespond(status int, message string, w http.ResponseWriter) {
@@ -14,5 +13,5 @@ func ApiRespond(status int, message string, w http.ResponseWriter) {
 
 func ApiRespondErr(err error, w http.ResponseWriter) {
 	ApiRespond(http.StatusInternalServerError, "Error", w)
-	fmt.Fprintln(os.Stderr, err.Error())
+	fmt.Println(err)
 }
