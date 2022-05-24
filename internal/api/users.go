@@ -18,7 +18,7 @@ func GetMe(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user_, err := osuapiv2.NewWithToken(token[0]).Me("osu")
+	user_, err := osuapiv2.NewWithToken(token[1]).Me("osu")
 	if err != nil {
 		if err == osuapiv2.ErrorUnauthorized {
 			helper.ApiRespond(http.StatusUnauthorized, err.Error(), w)
