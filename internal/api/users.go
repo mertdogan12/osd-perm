@@ -11,35 +11,45 @@ import (
 	"github.com/mertdogan12/osd-perm/pkg/helper"
 )
 
-func GetMe(w http.ResponseWriter, r *http.Request) {
-	token := strings.Split(r.Header.Get("Authorization"), " ")
+func checkToken(authToken string, w http.ResponseWriter) *osuapiv2.User {
+	token := strings.Split(authToken, " ")
 	if token[0] != "Bearer" {
 		helper.ApiRespond(http.StatusUnauthorized, "Authorization token must be Bearer", w)
-		return
+		return nil
 	}
 
-	user_, err := osuapiv2.NewWithToken(token[1]).Me("osu")
+	user, err := osuapiv2.NewWithToken(token[1]).Me("osu")
 	if err != nil {
 		if err == osuapiv2.ErrorUnauthorized {
 			helper.ApiRespond(http.StatusUnauthorized, err.Error(), w)
-			return
+			return nil
 		}
 
 		helper.ApiRespondErr(err, w)
+		return nil
+	}
+
+	return &user
+}
+
+func GetMe(w http.ResponseWriter, r *http.Request) {
+	user := checkToken(r.Header.Get("Authorization"), w)
+	if user == nil {
 		return
 	}
 
-	mongoUser, err := mongo.GetUser(user_.ID)
+	mongoUser, err := mongo.GetUser(user.ID)
 	if err != nil {
 		helper.ApiRespondErr(err, w)
 		return
 	}
+
 	if mongoUser == nil {
-		helper.ApiRespond(http.StatusNoContent, fmt.Sprintf("User does not exists. Id: %d", user_.ID), w)
+		helper.ApiRespond(http.StatusNoContent, fmt.Sprintf("User does not exists. Id: %d", user.ID), w)
 		return
 	}
 
-	fmt.Println("users/me | Success, id:", user_.ID)
+	fmt.Println("users/me | Success, id:", user.ID)
 	out, err := json.Marshal(mongoUser)
 	if err != nil {
 		helper.ApiRespondErr(err, w)
@@ -47,4 +57,8 @@ func GetMe(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write(out)
+}
+
+func Register(w http.ResponseWriter, r *http.Request) {
+
 }
