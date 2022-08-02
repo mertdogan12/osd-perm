@@ -16,13 +16,13 @@ type Group struct {
 
 func GetGroup(name string) (*Group, error) {
 	if _database == nil {
-		panic(errors.New("You are not connected (use mongo.Connect() to Connect))"))
+		panic(errors.New("you are not connected (use mongo.Connect() to Connect))"))
 	}
 
 	coll := _database.Collection("groups")
 
 	var group Group
-	err := coll.FindOne(context.TODO(), bson.D{{"name", name}}).Decode(&group)
+	err := coll.FindOne(context.TODO(), bson.D{bson.E{Key: "name", Value: name}}).Decode(&group)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			fmt.Println("Couldn't find group:", name)

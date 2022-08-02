@@ -19,13 +19,13 @@ type User struct {
 
 func GetUser(id int) (*User, error) {
 	if _database == nil {
-		panic(errors.New("You are not connected (use mongo.Connect() to Connect))"))
+		panic(errors.New("you are not connected (use mongo.Connect() to Connect))"))
 	}
 
 	coll := _database.Collection("users")
 
 	var user User
-	err := coll.FindOne(context.TODO(), bson.D{{"id", id}}).Decode(&user)
+	err := coll.FindOne(context.TODO(), bson.D{bson.E{Key: "id", Value: id}}).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			fmt.Println("Couldn't find user with id:", id)
