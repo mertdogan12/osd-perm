@@ -60,5 +60,8 @@ func GetMe(w http.ResponseWriter, r *http.Request) {
 }
 
 func Register(w http.ResponseWriter, r *http.Request) {
-
+	user := checkToken(r.Header.Get("Authorization"), w)
+	if user == nil {
+		return
+	}
 }

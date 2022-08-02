@@ -19,7 +19,7 @@ type User struct {
 
 func GetUser(id int) (*User, error) {
 	if _database == nil {
-		panic(errors.New("you are not connected (use mongo.Connect() to Connect))"))
+		return nil, errors.New("you are not connected (use mongo.Connect() to Connect))")
 	}
 
 	coll := _database.Collection("users")
@@ -53,4 +53,19 @@ func GetUser(id int) (*User, error) {
 	user.Permissions = perms
 
 	return &user, nil
+}
+
+func AddUser(user User) error {
+	if _database == nil {
+		return errors.New("you are not connected (use mongo.Connect() to Connect))")
+	}
+
+	coll := _database.Collection("users")
+
+	_, err := coll.InsertOne(context.TODO(), user)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
